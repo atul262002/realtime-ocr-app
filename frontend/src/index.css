@@ -1,8 +1,49 @@
 @import "tailwindcss";
 
-html, body, #root {
+@theme {
+    /* Colors */
+    --color-ohif-bg: #000000;
+    --color-ohif-bg-muted: #1e1e24;
+    /* Dark gray/blue for panels */
+    --color-ohif-bg-popover: #090c29;
+    /* Deep dark blue */
+
+    --color-ohif-primary: #348cfd;
+    /* OHIF Blue */
+    --color-ohif-primary-hover: #5bb5f9;
+
+    --color-ohif-text: #ffffff;
+    --color-ohif-text-muted: #9ccaf6;
+    /* Light blue-gray */
+
+    --color-ohif-border: #3c5d80;
+    --color-ohif-border-active: #348cfd;
+
+    /* Fonts */
+    --font-sans: "Inter", "Roboto", "Helvetica", "Arial", sans-serif;
+}
+
+html,
+body,
+#root {
     height: 100%;
     margin: 0;
     padding: 0;
     overflow: hidden;
+    background-color: var(--color-ohif-bg);
+    color: var(--color-ohif-text);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Scrollbar styling for OHIF look */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+    background-color: var(--color-ohif-bg-muted);
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: var(--color-ohif-border);
+    border-radius: 4px;
 }
