@@ -1,18 +1,61 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ArrowLeft, Clock, FileText } from 'lucide-react';
+import { ArrowLeft, Clock, FileText, Copy, Check } from 'lucide-react';
 import { useParams, Link } from 'react-router-dom';
 
 const API_URL = 'http://localhost:5000';
+
+function RegionCard({ region }) {
+    const [copied, setCopied] = useState(false);
+    const uniqueWords = [...new Set(region.words.map(w => w.word))];
+    const textToCopy = uniqueWords.join(', ');
+
+    const handleCopy = async () => {
+        await navigator.clipboard.writeText(textToCopy);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 1500);
+    };
+
+    return (
+        <div className="bg-gray-700/50 rounded-lg p-4 border border-gray-600 hover:border-blue-500 transition group">
+            <div className="flex justify-between items-center mb-2">
+                <h3 className="font-semibold text-blue-300">Region {region.region_index}</h3>
+                <div className="flex items-center gap-2">
+                    <span className="text-xs text-gray-400 bg-gray-800 px-2 py-1 rounded">
+                        {region.words.length} words
+                    </span>
+                    <button
+                        onClick={handleCopy}
+                        className="flex items-center gap-1 px-2 py-1 text-xs bg-ohif-primary ohif-bg-popover-hover text-white rounded transition"
+                    >
+                        {copied ? (
+                            <>
+                                <Check size={12} /> Copied
+                            </>
+                        ) : (
+                            <>
+                                <Copy size={12} /> Copy
+                            </>
+                        )}
+                    </button>
+                </div>
+            </div>
+
+            <div className="text-sm text-gray-300 leading-relaxed font-mono bg-black/20 p-2 rounded">
+                {region.words.length > 0 ? (
+                    uniqueWords.join(', ')
+                ) : (
+                    <span className="text-gray-500 italic">No text detected</span>
+                )}
+            </div>
+        </div>
+    );
+}
 
 function HistoryDetail() {
     const { uuid } = useParams();
     const [recording, setRecording] = useState(null);
     const [loading, setLoading] = useState(true);
     const videoRef = useRef(null);
-
-    useEffect(() => {
-        fetchRecordingDetails();
-    }, [uuid]);
 
     const fetchRecordingDetails = async () => {
         try {
@@ -29,6 +72,13 @@ function HistoryDetail() {
         }
         setLoading(false);
     };
+
+    useEffect(() => {
+        const fetchData = async () => {
+            await fetchRecordingDetails();
+        };
+        fetchData();
+    }, [uuid]);
 
     const videoUrl = recording?.filename ? `${API_URL}/uploads/${recording.uuid}_${recording.filename}` : null;
 
@@ -89,8 +139,8 @@ function HistoryDetail() {
                 </div>
 
                 {/* Sidebar - Results */}
-                <div className="w-96 bg-gray-800 rounded-xl border border-gray-700 flex flex-col overflow-hidden">
-                    <div className="p-4 border-b border-gray-700 bg-gray-800">
+                <div className="w-96 bg-ohif-bg rounded-xl border border-gray-700 flex flex-col overflow-hidden">
+                    <div className="p-4 border-b border-gray-700 bg-ohif-bg-muted">
                         <h2 className="font-bold flex items-center gap-2">
                             <FileText size={20} className="text-blue-400" />
                             OCR Regions ({recording.regions.length})
@@ -99,22 +149,7 @@ function HistoryDetail() {
 
                     <div className="flex-1 overflow-y-auto p-4 space-y-4">
                         {recording.regions.map((region) => (
-                            <div key={region.id} className="bg-gray-700/50 rounded-lg p-4 border border-gray-600 hover:border-blue-500 transition group">
-                                <div className="flex justify-between items-center mb-2">
-                                    <h3 className="font-semibold text-blue-300">Region {region.region_index}</h3>
-                                    <span className="text-xs text-gray-400 bg-gray-800 px-2 py-1 rounded">
-                                        {region.words.length} words
-                                    </span>
-                                </div>
-
-                                <div className="text-sm text-gray-300 leading-relaxed font-mono bg-black/20 p-2 rounded">
-                                    {region.words.length > 0 ? (
-                                        [...new Set(region.words.map(w => w.word))].join(' ')
-                                    ) : (
-                                        <span className="text-gray-500 italic">No text detected</span>
-                                    )}
-                                </div>
-                            </div>
+                            <RegionCard key={region.id} region={region} />
                         ))}
                     </div>
                 </div>

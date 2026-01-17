@@ -2,15 +2,15 @@
 
 @theme {
     /* Colors */
-    --color-ohif-bg: #000000;
-    --color-ohif-bg-muted: #1e1e24;
+    --color-ohif-bg: #0f2805;
+    --color-ohif-bg-muted: #173c15;
     /* Dark gray/blue for panels */
-    --color-ohif-bg-popover: #090c29;
-    /* Deep dark blue */
+    --color-ohif-bg-popover: #0f2805;
+    /* Deep Greenish */
 
-    --color-ohif-primary: #348cfd;
-    /* OHIF Blue */
-    --color-ohif-primary-hover: #5bb5f9;
+    --color-ohif-primary: #76a660;
+    /* OHIF Greenish */
+    --color-ohif-primary-hover: #c4ffa9;
 
     --color-ohif-text: #ffffff;
     --color-ohif-text-muted: #9ccaf6;
